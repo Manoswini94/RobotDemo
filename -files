@@ -1,0 +1,71 @@
+[33mcommit c7d226faaea06c43deb26038080a670e10afa93f[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mRobot_abc[m[33m, [m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmaster[m[33m)[m
+Author: Tatu Aalto <aalto.tatu@gmail.com>
+Date:   Thu Jan 24 22:45:21 2019 +0200
+
+    Updating release tools
+
+[1mdiff --git a/BUILD.rst b/BUILD.rst[m
+[1mindex aa6e6b7..cf3d020 100644[m
+[1m--- a/BUILD.rst[m
+[1m+++ b/BUILD.rst[m
+[36m@@ -37,6 +37,9 @@[m [mthe command line like::[m
+ Run ``invoke`` without arguments for help. All tasks can be listed using[m
+ ``invoke --list`` and each task's usage with ``invoke --help task``.[m
+ [m
+[32m+[m[32mCreating release[m
+[32m+[m[32m----------------[m
+[32m+[m
+ 1. Test that everything works with Python 2 and Python 3. Exactly one test[m
+    ought to fail::[m
+ [m
+[36m@@ -51,9 +54,9 @@[m [mRun ``invoke`` without arguments for help. All tasks can be listed using[m
+ [m
+      inv kw-docs[m
+ [m
+[31m-4. Move regenerated log, report and library doc to[m
+[31m-   https://github.com/robotframework/RobotDemo/docs[m
+[31m-   to make them visible online.[m
+[32m+[m[32m4. Move regenerated log, report and library doc to docs::[m
+[32m+[m
+[32m+[m[32m     inv move-docs[m
+ [m
+ 5. If README.rst has changed, generate project documentation based on it::[m
+ [m
+[1mdiff --git a/tasks.py b/tasks.py[m
+[1mindex f035e5c..181468a 100644[m
+[1m--- a/tasks.py[m
+[1m+++ b/tasks.py[m
+[36m@@ -1,4 +1,5 @@[m
+ from pathlib import Path[m
+[32m+[m[32mimport shutil[m
+ [m
+ from docutils.core import publish_cmdline[m
+ from invoke import task[m
+[36m@@ -23,7 +24,7 @@[m [mdef kw_docs(ctx):[m
+ def project_docs(ctx):[m
+     """Generate project documentation.[m
+ [m
+[31m-     These docs are visible at http://robotframework.org/SeleniumLibrary/.[m
+[32m+[m[32m     These docs are visible at http://robotframework.org/RobotDemo/.[m
+      """[m
+     args = ['--stylesheet=style.css,extra.css',[m
+             '--link-stylesheet',[m
+[36m@@ -31,3 +32,18 @@[m [mdef project_docs(ctx):[m
+             'docs/index.html'][m
+     publish_cmdline(writer_name='html5', argv=args)[m
+     print(Path(args[-1]).absolute())[m
+[32m+[m
+[32m+[m
+[32m+[m[32m@task[m
+[32m+[m[32mdef move_docs(ctx):[m
+[32m+[m[32m    """Move report.html and log.html to docs[m
+[32m+[m
+[32m+[m[32m    These docs are visible http://robotframework.org/RobotDemo/.[m
+[32m+[m[32m    """[m
+[32m+[m[32m    log = Path('./log.html')[m
+[32m+[m[32m    report = Path('./report.html')[m
+[32m+[m[32m    dest = Path('.') / 'docs'[m
+[32m+[m[32m    print(log.absolute())[m
+[32m+[m[32m    shutil.copy(log.absolute(), str(dest))[m
+[32m+[m[32m    print(report.absolute())[m
+[32m+[m[32m    shutil.copy(report.absolute(), str(dest))[m
